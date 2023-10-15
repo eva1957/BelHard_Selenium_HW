@@ -11,6 +11,14 @@ class BasePage:
     def __init__(self, driver: Firefox):
         self.driver = driver
 
+    def assert_url(self, result):
+        get_url = self.driver.current_url
+        assert get_url == result
+        print("Good value URL")
+
+
+class BuyCoat(BasePage):
+
     # Locators
     url = "https://boomkids.by/"
     button_accept_cookie = "//button[@class='btn btn-green']"
@@ -98,6 +106,7 @@ class BasePage:
     # Methods
     def select_clothes(self):
         self.driver.get(self.url)
+        self.assert_url(self.url)
         self.click_cookie()
         self.click_tab()
         self.click_link()
@@ -108,3 +117,5 @@ class BasePage:
         self.click_select_size()
         self.click_button_buy()
         self.click_basket()
+
+
