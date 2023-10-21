@@ -1,20 +1,26 @@
 import time
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
 from const import FIND_TIMEOUT
 from main_page import BasePage
 
 
 class MakeOrder(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.driver = driver
+
+    def assert_url_order_page(self, result):
+        card_url = self.driver.current_url
+        assert card_url == result
+        print("URL Order Page is correct")
+
     # Locators
+    current_url = "https://boomkids.by/cart"
     coupon_field = "//input[@id='coupon']"
     button_coupon = "//div[@id='btnCoupon']"
     checkbox_no_confirm = "//label[@for='cartPersonNoConfirm']"
-    radiobutton_delivery = "//label[@for='deliveryMethodDPD.courierNoContact']"
-    radiobutton_halva = "//label[@for='paymentMethodHalva']"
 
     # Getters
     def get_coupon(self, timeout=FIND_TIMEOUT):
@@ -25,12 +31,6 @@ class MakeOrder(BasePage):
 
     def get_checkbox(self, timeout=FIND_TIMEOUT):
         return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable((By.XPATH, self.checkbox_no_confirm)))
-
-    def get_radiobutton_delivery(self, timeout=FIND_TIMEOUT):
-        return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable((By.XPATH, self.radiobutton_delivery)))
-
-    def get_radiobutton_halva(self, timeout=FIND_TIMEOUT):
-        return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable((By.XPATH, self.radiobutton_halva)))
 
     # Actions
     def input_coupon(self):
@@ -46,6 +46,32 @@ class MakeOrder(BasePage):
         self.get_checkbox().click()
         print("Click checkbox no confirm")
 
+    # Methods
+    def continue_order(self):
+        self.assert_url_order_page(self.current_url)
+        self.input_coupon()
+        self.click_button_coupon()
+        self.driver.execute_script("window.scrollTo(0,500)")
+        self.click_checkbox()
+
+
+class ChooseDeliveryAndPayment(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.driver = driver
+
+    # Locators
+    radiobutton_delivery = "//label[@for='deliveryMethodDPD.courierNoContact']"
+    radiobutton_halva = "//label[@for='paymentMethodHalva']"
+
+    # Getters
+    def get_radiobutton_delivery(self, timeout=FIND_TIMEOUT):
+        return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable((By.XPATH, self.radiobutton_delivery)))
+
+    def get_radiobutton_halva(self, timeout=FIND_TIMEOUT):
+        return WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable((By.XPATH, self.radiobutton_halva)))
+
+    # Actions
     def click_radiobutton_delivery(self):
         self.get_radiobutton_delivery().click()
         print("Click radiobutton DPD delivery")
@@ -55,15 +81,8 @@ class MakeOrder(BasePage):
         print("Click radiobutton Halva")
 
     # Methods
-    def continue_order(self):
-        self.input_coupon()
-        self.click_button_coupon()
-        self.driver.execute_script("window.scrollTo(0,500)")
-        self.click_checkbox()
+    def delivery_and_payment(self):
         self.click_radiobutton_delivery()
         self.driver.execute_script("window.scrollTo(0,500)")
         self.click_radiobutton_halva()
         self.driver.execute_script("window.scrollTo(0,500)")
-
-
-

@@ -12,3 +12,5 @@ def driver():
     driver.implicitly_wait(1)
     return driver
 
+
+

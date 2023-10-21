@@ -1,12 +1,15 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
 from const import FIND_TIMEOUT
 from main_page import BasePage
 
 
 class PersonalInfo(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver)
+        self.driver = driver
+
     # Locators
     field_name = "//input[@id='cartPersonFirstName']"
     field_last_name = "//input[@id='cartPersonLastName']"
